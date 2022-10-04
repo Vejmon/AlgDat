@@ -38,7 +38,7 @@ public class DobbeltLenketListe<T> implements Liste<T> {
         hode = null;
         hale = null;
         antall = 0;
-        //throw new UnsupportedOperationException();
+
     }
 
     public DobbeltLenketListe(T[] a) {
@@ -63,7 +63,14 @@ public class DobbeltLenketListe<T> implements Liste<T> {
     }
 
     public Liste<T> subliste(int fra, int til) {
-        throw new UnsupportedOperationException();
+        DobbeltLenketListe<T> utListe = new DobbeltLenketListe<>();
+        Node<T> n = finnNode(fra);
+        int indeks = 0;
+        for (int i = fra; i < til; i++) {
+            utListe.leggInn(indeks, n.verdi);
+            n = n.neste;
+        }
+        return utListe;
     }
 
     @Override
@@ -144,6 +151,8 @@ public class DobbeltLenketListe<T> implements Liste<T> {
 
     @Override
     public T oppdater(int indeks, T nyverdi) {
+        Objects.requireNonNull(nyverdi);
+        indeksKontroll(indeks,false);
         Node<T> gmlNode = finnNode(indeks);
         T gmlVerdi = gmlNode.verdi;
         gmlNode.verdi = nyverdi;
@@ -164,14 +173,15 @@ public class DobbeltLenketListe<T> implements Liste<T> {
     public void nullstill() {
         throw new UnsupportedOperationException();
     }
+    private StringBuilder ut = new StringBuilder();
 
     @Override
     public String toString() {
-        StringBuilder ut = new StringBuilder();
+        ut.delete(0,ut.length());
         ut.append("[");
-        Node tmp = hode;
+        Node<T> tmp = hode;
         while(tmp != null){
-            ut.append(tmp.verdi + ", ");
+            ut.append(tmp.verdi).append(", ");
             tmp = tmp.neste;
         }
         if (ut.length()> 2){
@@ -182,11 +192,11 @@ public class DobbeltLenketListe<T> implements Liste<T> {
     }
 
     public String omvendtString() {
-        StringBuilder ut = new StringBuilder();
+        ut.delete(0,ut.length());
         ut.append("[");
-        Node tmp = hale;
+        Node<T> tmp = hale;
         while (tmp != null) {
-            ut.append(tmp.verdi+ ", ");
+            ut.append(tmp.verdi).append(", ");
             tmp = tmp.forrige;
         }
         if (ut.length()> 2){
