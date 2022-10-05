@@ -107,6 +107,7 @@ public class DobbeltLenketListe<T> implements Liste<T> {
     @Override
     public boolean leggInn(T verdi) {
         Objects.requireNonNull(verdi, "kan ikke legge inn en null verdi");
+        int gmlEndring = endringer;
         if (tom()) {
             Node<T> n = new Node<>(verdi, hode, hale);
             hode = hale = n;
@@ -120,15 +121,44 @@ public class DobbeltLenketListe<T> implements Liste<T> {
             antall++;
             endringer++;
         }
-        return true;
+
+        return endringer > gmlEndring;
         //hvorfor returnere true?
     }
 
     @Override
     public void leggInn(int indeks, T verdi) {
+        //kontrollerer input
         Objects.requireNonNull(verdi);
 
-        throw new UnsupportedOperationException();
+        if (antall() == 0 && indeks == 0){
+            hode = hale = new Node<>(verdi,null,null);
+        }
+        if (indeks < 0 || indeks > antall()){
+            throw new IndexOutOfBoundsException(indeks + " indeks er utenfor listens lengde " + (antall()));
+        }
+        //setter inn Node bakerst
+        if (indeks == antall()){
+            Node<T> n = new Node<T>(verdi, hale,null);
+            hale.neste = n;
+            hale = n;
+        }
+        //setter Node forann
+        else if (indeks == 0){
+            Node<T> n = new Node<T>(verdi, null, hode);
+            hode.forrige = n;
+            hode = n;
+        }
+        //setter Node imellom to eksisterende
+        else {
+            Node<T> flytter = finnNode(indeks);
+            Node<T> forann = finnNode(indeks-1);
+            Node<T> n = new Node<T>(verdi, forann, flytter);
+            flytter.forrige = n;
+            forann.neste = n;
+        }
+        endringer++;
+        antall++;
     }
 
     @Override
@@ -186,7 +216,6 @@ public class DobbeltLenketListe<T> implements Liste<T> {
             }
             }
         }
-        //throw new UnsupportedOperationException();
         return idx;
     }
 
