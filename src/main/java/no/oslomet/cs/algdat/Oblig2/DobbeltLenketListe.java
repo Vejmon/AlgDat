@@ -35,10 +35,10 @@ public class DobbeltLenketListe<T> implements Liste<T> {
 
 
     public DobbeltLenketListe() {
+        //lager tom liste
         hode = null;
         hale = null;
         antall = 0;
-
     }
 
     public DobbeltLenketListe(T[] a) {
@@ -46,11 +46,13 @@ public class DobbeltLenketListe<T> implements Liste<T> {
 
         for (int i = 0; i < a.length; i++) {
             if (!Objects.isNull(a[i])) {
+                //plasserer det første elementet hvis listen er tom
                 if (tom()) {
                     Node<T> n = new Node<>(a[i], hode, hale);
                     hode = hale = n;
                     antall++;
                 } else {
+                    //plasserer de resterende Nodene baksert
                     Node<T> n = new Node<>(a[i]);
                     hale.neste = n;
                     n.forrige = hale;
@@ -60,37 +62,39 @@ public class DobbeltLenketListe<T> implements Liste<T> {
             }
         }
     }
-
-
-
     public Liste<T> subliste(int fra, int til) {
         DobbeltLenketListe<T> utListe = new DobbeltLenketListe<>();
+        //godkjenning av input, og returnerer tom liste, hvis listen er tom
         if (antall() == 0) {
             return utListe;
         }
         fraTilKontroll(fra,til);
 
+
         Node<T> n = finnNode(fra);
         int indeks = 0;
-
         for (int i = fra; i < til; i++) {
+            //genererer utlisten
             utListe.leggInn(n.verdi);
             n = n.neste;
             indeks++;
         }
+        //setter endringer og indeks
         utListe.antall = indeks;
         utListe.endringer = 0;
         return utListe;
     }
 
     private void fraTilKontroll(int fra, int til){
-        if (fra < 0 || fra > antall()){throw new IndexOutOfBoundsException(fra + " fra er utenfor sublistens scope: " + antall());
-    }
-        if (til < 0 || til > antall()) {throw new IndexOutOfBoundsException(til + " til er utenfor sublistens scope" + antall());
-        }
+        //godkjenning av inputten fra og til, om de er innenfor scope og ikke omvendt.
+        if (fra < 0 || fra > antall()){
+            throw new IndexOutOfBoundsException(fra + " fra er utenfor sublistens scope: " + antall());}
+
+        if (til < 0 || til > antall()) {
+            throw new IndexOutOfBoundsException(til + " til er utenfor sublistens scope" + antall());}
+
         if (til < fra) {
-            throw new IllegalArgumentException(til + " til er mindre enn fra" + fra);
-        }
+            throw new IllegalArgumentException(til + " til er mindre enn fra" + fra);}
     }
 
 
@@ -106,21 +110,24 @@ public class DobbeltLenketListe<T> implements Liste<T> {
 
     @Override
     public boolean leggInn(T verdi) {
+        //sjekker innVerdi
         Objects.requireNonNull(verdi, "kan ikke legge inn en null verdi");
+
         int gmlEndring = endringer;
-        if (tom()) {
+
+        if (tom()) {   //plasserer den første hvis listen er tom
             Node<T> n = new Node<>(verdi, hode, hale);
             hode = hale = n;
-            antall++;
-            endringer++;
-        } else {
+
+        } else {       //plasserer noden bakerst i listen
             Node<T> n = new Node<>(verdi, hale, null);
             hale.neste = n;
             n.forrige = hale;
             hale = n;
-            antall++;
-            endringer++;
+
         }
+        antall++;
+        endringer++;
 
         return endringer > gmlEndring;
         //hvorfor returnere true?
@@ -130,13 +137,13 @@ public class DobbeltLenketListe<T> implements Liste<T> {
     public void leggInn(int indeks, T verdi) {
         //kontrollerer input
         Objects.requireNonNull(verdi);
-
         if (antall() == 0 && indeks == 0){
             hode = hale = new Node<>(verdi,null,null);
         }
         if (indeks < 0 || indeks > antall()){
             throw new IndexOutOfBoundsException(indeks + " indeks er utenfor listens lengde " + (antall()));
         }
+
         //setter inn Node bakerst
         if (indeks == antall()){
             Node<T> n = new Node<T>(verdi, hale,null);
@@ -163,7 +170,7 @@ public class DobbeltLenketListe<T> implements Liste<T> {
 
     @Override
     public boolean inneholder(T verdi) {
-
+        //ser om listen inneholder verdien
         if (indeksTil(verdi)>=0){
             return true;
         }
@@ -171,22 +178,24 @@ public class DobbeltLenketListe<T> implements Liste<T> {
     }
 
     private Node<T> finnNode(int indeks) {
+        //sjekker input
         indeksKontroll(indeks, false);
+
         int teller = 1;
         Node<T> tmp = hode;
 
+        //hvis indeks er på første halvdel av listen starter søket der
         if (indeks < (this.antall() / 2)) {
             while (teller <= indeks) {
                 tmp = tmp.neste;
                 teller++;
-            }
+            }       //søket starter bakerst hvis indeks er i siste halvdel
         } else {
             tmp = hale;
             teller = this.antall() - 1;
             while (teller > indeks) {
                 tmp = tmp.forrige;
                 teller--;
-
             }
         }
         return tmp;
@@ -194,39 +203,39 @@ public class DobbeltLenketListe<T> implements Liste<T> {
 
     @Override
     public T hent(int indeks) {
-        Node<T> enNode = finnNode(indeks);
-        return enNode.verdi;
+        //henter verdien til en indeks
+        return finnNode(indeks).verdi;
     }
 
     @Override
     public int indeksTil(T verdi) {
+        //initialiserer variabler, sjekker listen og input
         int idx = -1;
         if (antall() == 0 || verdi == null) {
             return idx;
         }
         Node<T> n = finnNode(0);
-        if (verdi.equals(n.verdi)){
-            return 0;
-        }
-        if (antall() >0){
-        for (int i = 1; i < antall(); i++) {
-            n = n.neste;
-            if (verdi.equals(n.verdi)){
+
+        //søker igjennom listen etter verdien
+        for (int i = 0; i < antall(); i++) {
+            if (n.verdi.equals(verdi)){
                 return i;
             }
-            }
+            n = n.neste;
         }
         return idx;
     }
 
     @Override
     public T oppdater(int indeks, T nyverdi) {
-        Objects.requireNonNull(nyverdi);
+
+        Objects.requireNonNull(nyverdi);    //sjekker input
         indeksKontroll(indeks, false);
-        Node<T> gmlNode = finnNode(indeks);
+
+        Node<T> gmlNode = finnNode(indeks);  //setter inn noden
         T gmlVerdi = gmlNode.verdi;
         gmlNode.verdi = nyverdi;
-        endringer++;
+        endringer++;                //oppdaterer listen
         return gmlVerdi;
     }
 
@@ -245,25 +254,28 @@ public class DobbeltLenketListe<T> implements Liste<T> {
         throw new UnsupportedOperationException();
     }
 
-
     @Override
     public String toString() {
+
         StringBuilder ut = new StringBuilder();
         ut.append("[");
         Node<T> tmp = hode;
 
-        while (tmp != null) {
+        while (tmp != null) {       //setter inn verdier i listen og legger til komma
             ut.append(tmp.verdi).append(", ");
             tmp = tmp.neste;
         }
-        if (ut.length() > 2) {
+
+        if (ut.length() > 2) {      //fjerner enden av stringen hvis den ikke er tom
             ut.delete(ut.length() - 2, ut.length());
         }
+
         ut.append("]");
         return ut.toString();
     }
 
     public String omvendtString() {
+        //samme som toString bare bakvendt
         StringBuilder ut = new StringBuilder();
         ut.append("[");
         Node<T> tmp = hale;
