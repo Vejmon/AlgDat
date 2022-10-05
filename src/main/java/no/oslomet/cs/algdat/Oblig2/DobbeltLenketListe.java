@@ -79,6 +79,7 @@ public class DobbeltLenketListe<T> implements Liste<T> {
             indeks++;
         }
         utListe.antall = indeks;
+        utListe.endringer = 0;
         return utListe;
     }
 
@@ -163,7 +164,18 @@ public class DobbeltLenketListe<T> implements Liste<T> {
 
     @Override
     public int indeksTil(T verdi) {
-        throw new UnsupportedOperationException();
+        int idx = -1;
+        Node<T> n = finnNode(0);
+        if (verdi.equals(n.verdi)){
+            return 0;
+        }
+        if (antall() >0){
+        for (int i = 1; i < antall(); i++) {
+             //jobb her  if ()
+            }
+        }
+        //throw new UnsupportedOperationException();
+        return idx;
     }
 
     @Override
