@@ -87,7 +87,11 @@ public class DobbeltLenketListe<T> implements Liste<T> {
     }
         if (til < 0 || til > antall()) {throw new IndexOutOfBoundsException(til + " til er utenfor sublistens scope" + antall());
         }
+        if (til < fra) {
+            throw new IllegalArgumentException(til + " til er mindre enn fra" + fra);
+        }
     }
+
 
     @Override
     public int antall() {
@@ -281,11 +285,11 @@ public class DobbeltLenketListe<T> implements Liste<T> {
         System.out.println(liste.omvendtString());
         */
 
-        /*Character[] c = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J',};
+        Character[] c = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J',};
         DobbeltLenketListe<Character> liste = new DobbeltLenketListe<>(c);
-        System.out.println(liste.subliste(3, 8)); // [D, E, F, G, H]
+        System.out.println(liste.subliste(8, 3)); // [D, E, F, G, H]
         System.out.println(liste.subliste(5, 5)); // []
-        System.out.println(liste.subliste(8, liste.antall())); // [I, J]*/
+        System.out.println(liste.subliste(8, liste.antall())); // [I, J]
         //System.out.println(liste.subliste(0,11)); // skal kaste unntak
 
 

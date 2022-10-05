@@ -484,16 +484,19 @@ class Oblig2Test {
             }
         }
 
-        try {     //gjør fra til negativ
+        try {
             //cliste.subliste(2, 1);
-            cliste.subliste(-2, 1);
+            //gjør fra til negativ
+            cliste.subliste(2, 1);
 
             antallFeil++;
             System.out.println
                     ("Oppgave 3å3: Det skal kastes et unntak når fra er negativ!");
         } catch (Exception e) {  // endret til IndexOutOfBoundsException slik som de andre testene er
             //if (!e.getClass().getName().equals("java.lang.IllegalArgumentException")) {
-                if (!e.getClass().getName().equals("java.lang.IndexOutOfBoundsException")) {
+
+                if (!e.getClass().getName().equals("java.lang.IllegalArgumentException")) {
+
                 System.out.println  // står ikke i oppgavebeskrivelsen at det er illegalArgumentException som skal brukes
                 ("Oppgave 3å4: Skal ha IllegalArgumentException her!");
                 antallFeil++;
