@@ -62,6 +62,7 @@ public class DobbeltLenketListe<T> implements Liste<T> {
             }
         }
     }
+
     public Liste<T> subliste(int fra, int til) {
         DobbeltLenketListe<T> utListe = new DobbeltLenketListe<>();
         //godkjenning av input, og returnerer tom liste, hvis listen er tom
@@ -97,16 +98,11 @@ public class DobbeltLenketListe<T> implements Liste<T> {
             throw new IllegalArgumentException(til + " til er mindre enn fra" + fra);}
     }
 
+    @Override
+    public int antall() {return this.antall;}
 
     @Override
-    public int antall() {
-        return this.antall;
-    }
-
-    @Override
-    public boolean tom() {
-        return antall() == 0;
-    }
+    public boolean tom() {return antall() == 0;}
 
     @Override
     public boolean leggInn(T verdi) {
@@ -137,15 +133,18 @@ public class DobbeltLenketListe<T> implements Liste<T> {
     public void leggInn(int indeks, T verdi) {
         //kontrollerer input
         Objects.requireNonNull(verdi);
-        if (antall() == 0 && indeks == 0){
-            hode = hale = new Node<>(verdi,null,null);
-        }
+
         if (indeks < 0 || indeks > antall()){
             throw new IndexOutOfBoundsException(indeks + " indeks er utenfor listens lengde " + (antall()));
         }
 
+        //setter inn node i tom liste
+        if (antall() == 0 && indeks == 0){
+            Node<T> n = new Node<>(verdi, hode, hale);
+            hode = hale = n;
+        }
         //setter inn Node bakerst
-        if (indeks == antall()){
+        else if (indeks == antall()){
             Node<T> n = new Node<T>(verdi, hale,null);
             hale.neste = n;
             hale = n;
@@ -159,7 +158,9 @@ public class DobbeltLenketListe<T> implements Liste<T> {
         //setter Node imellom to eksisterende
         else {
             Node<T> flytter = finnNode(indeks);
-            Node<T> forann = finnNode(indeks-1);
+            Node<T> forann = flytter.forrige;
+
+          //  Node<T> forann = finnNode(indeks-1);
             Node<T> n = new Node<T>(verdi, forann, flytter);
             flytter.forrige = n;
             forann.neste = n;
@@ -182,17 +183,18 @@ public class DobbeltLenketListe<T> implements Liste<T> {
         indeksKontroll(indeks, false);
 
         int teller = 1;
+
         Node<T> tmp = hode;
 
         //hvis indeks er på første halvdel av listen starter søket der
-        if (indeks < (this.antall() / 2)) {
+        if (indeks < (antall() / 2)) {
             while (teller <= indeks) {
                 tmp = tmp.neste;
                 teller++;
             }       //søket starter bakerst hvis indeks er i siste halvdel
         } else {
             tmp = hale;
-            teller = this.antall() - 1;
+            teller = antall() - 1;
             while (teller > indeks) {
                 tmp = tmp.forrige;
                 teller--;
@@ -202,10 +204,7 @@ public class DobbeltLenketListe<T> implements Liste<T> {
     }
 
     @Override
-    public T hent(int indeks) {
-        //henter verdien til en indeks
-        return finnNode(indeks).verdi;
-    }
+    public T hent(int indeks) {return finnNode(indeks).verdi;}
 
     @Override
     public int indeksTil(T verdi) {
@@ -241,12 +240,70 @@ public class DobbeltLenketListe<T> implements Liste<T> {
 
     @Override
     public boolean fjern(T verdi) {
-        throw new UnsupportedOperationException();
+        //sjekker input
+        if (verdi == null){return false;}
+        int idx = indeksTil(verdi);
+        //returnerer tom liste
+        if (antall()==0){
+            return false;
+        }
+
+        //fjerner bakerst
+        else if (idx == antall()-1){
+            hale.forrige = hale.forrige.forrige;
+            hale.forrige.forrige.neste = hale.forrige;
+
+        } else if (idx == 0) {
+            hode.neste = hode.neste.neste;
+            hode.neste.forrige = hode.neste;
+        } else {
+            Node<T> forann = finnNode(idx-1);
+            Node<T> bak = forann.neste.neste;
+            forann.neste = bak;
+            bak.forrige = forann;
+        }
+        endringer++;
+        antall--;
+        return true;
     }
 
     @Override
     public T fjern(int indeks) {
-        throw new UnsupportedOperationException();
+        indeksKontroll(indeks,false);
+
+        //returnerer tom Node hvis listen er tom
+        if (antall() == 0) {
+            return null;
+        }
+        //jobb her
+
+
+
+        /*indeksKontroll(indeks,false);
+        if (antall() ==0){
+            return null;
+        }
+        if (indeks > antall()-1 || indeks < 0){
+            return null;
+        }
+        //Node<T> n = finnNode(indeks);
+
+        Node<T> n = new Node<T>(hode.verdi);
+        if (indeks == 0) {
+            n = new Node<T>(hode.neste.verdi, null,hode.neste.neste);
+            hode.neste = n;
+        }
+        else if (indeks == antall()-1){
+            n = new Node<T>(hale.forrige.verdi, hale.forrige,null);
+            hale.forrige = n;
+        }
+        else {
+
+        }
+        endringer++;
+        antall--;
+        return n.verdi;
+*/      throw new UnsupportedOperationException();
     }
 
     @Override
@@ -352,9 +409,35 @@ public class DobbeltLenketListe<T> implements Liste<T> {
 
         Character[] c = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J',};
         DobbeltLenketListe<Character> liste = new DobbeltLenketListe<>(c);
-        System.out.println(liste.subliste(8, 3)); // [D, E, F, G, H]
-        System.out.println(liste.subliste(5, 5)); // []
-        System.out.println(liste.subliste(8, liste.antall())); // [I, J]
+      // System.out.println(liste.subliste(3, 8)); // [D, E, F, G, H]
+      // System.out.println(liste.subliste(5, 5)); // []
+      // System.out.println(liste.subliste(8, liste.antall())); // [I, J]
+
+
+        for (int i = 0; i < liste.antall(); i++) {
+            Node<Character> n = liste.finnNode(i);
+        }
+
+        Integer[] nn = {1};
+        DobbeltLenketListe<Integer> enliste = new DobbeltLenketListe<Integer>(nn);
+
+        String ut = enliste.toString();
+        Integer[] tomList = new Integer[0];
+        DobbeltLenketListe<Integer> annenListe = new DobbeltLenketListe<>(tomList);
+
+        annenListe.leggInn(0,1);
+        String ut1 = annenListe.toString();
+
+
+        System.out.println(liste);
+        liste.leggInn(3,'Z');
+        System.out.println(liste);
+        liste.leggInn(0,'H');
+        System.out.println(liste);
+        liste.leggInn(liste.antall(),'O');
+        System.out.println(liste);
+        System.out.println(liste.antall());
+
         //System.out.println(liste.subliste(0,11)); // skal kaste unntak
 
 
