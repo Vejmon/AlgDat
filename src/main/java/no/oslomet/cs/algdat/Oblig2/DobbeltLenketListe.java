@@ -145,13 +145,13 @@ public class DobbeltLenketListe<T> implements Liste<T> {
         }
         //setter inn Node bakerst
         else if (indeks == antall()){
-            Node<T> n = new Node<T>(verdi, hale,null);
+            Node<T> n = new Node<>(verdi, hale, null);
             hale.neste = n;
             hale = n;
         }
         //setter Node forann
         else if (indeks == 0){
-            Node<T> n = new Node<T>(verdi, null, hode);
+            Node<T> n = new Node<>(verdi, null, hode);
             hode.forrige = n;
             hode = n;
         }
@@ -161,7 +161,7 @@ public class DobbeltLenketListe<T> implements Liste<T> {
             Node<T> forann = flytter.forrige;
 
           //  Node<T> forann = finnNode(indeks-1);
-            Node<T> n = new Node<T>(verdi, forann, flytter);
+            Node<T> n = new Node<>(verdi, forann, flytter);
             flytter.forrige = n;
             forann.neste = n;
         }
@@ -172,10 +172,7 @@ public class DobbeltLenketListe<T> implements Liste<T> {
     @Override
     public boolean inneholder(T verdi) {
         //ser om listen inneholder verdien
-        if (indeksTil(verdi)>=0){
-            return true;
-        }
-        return false;
+        return indeksTil(verdi) >= 0;
     }
 
     private Node<T> finnNode(int indeks) {
@@ -213,7 +210,8 @@ public class DobbeltLenketListe<T> implements Liste<T> {
         if (antall() == 0 || verdi == null) {
             return idx;
         }
-        Node<T> n = finnNode(0);
+
+        Node<T> n = hode;
 
         //søker igjennom listen etter verdien
         for (int i = 0; i < antall(); i++) {
@@ -241,69 +239,77 @@ public class DobbeltLenketListe<T> implements Liste<T> {
     @Override
     public boolean fjern(T verdi) {
         //sjekker input
-        if (verdi == null){return false;}
-        int idx = indeksTil(verdi);
-        //returnerer tom liste
-        if (antall()==0){
+        if (antall()==0){   //returnerer tom liste
             return false;
         }
+        if (verdi == null){return false;}
 
-        //fjerner bakerst
-        else if (idx == antall()-1){
-            hale.forrige = hale.forrige.forrige;
-            hale.forrige.forrige.neste = hale.forrige;
+        Node<T> n = hode;
+        boolean funnet = false;
 
-        } else if (idx == 0) {
-            hode.neste = hode.neste.neste;
-            hode.neste.forrige = hode.neste;
-        } else {
-            Node<T> forann = finnNode(idx-1);
-            Node<T> bak = forann.neste.neste;
-            forann.neste = bak;
-            bak.forrige = forann;
+        //looper igjennom listen for å finne verdien
+        for (int i = 0; i < antall(); i++) {
+            if (n.verdi.equals(verdi)){
+                funnet = true;
+                break;
+            }
+            n = n.neste;
         }
-        endringer++;
-        antall--;
-        return true;
+
+        if (funnet) {
+            if (antall() == 1) {   //fjerner i liste med 1 element
+                hode = hale = null;
+            } else if (n.equals(hale)) {     //fjerner bakerst
+                hale.forrige.neste = null;
+                hale = hale.forrige;
+
+            } else if (n.equals(hode)) {      //fjerner forerst
+                hode.neste.forrige = null;
+                hode = hode.neste;
+
+            } else {                    //fjerner midt i
+                Node<T> forann = n.forrige;
+                Node<T> bak = n.neste;
+                forann.neste = bak;
+                bak.forrige = forann;
+            }
+            endringer++;
+            antall--;
+            return true;
+
+        } else {
+            return false;
+        }
     }
 
     @Override
     public T fjern(int indeks) {
         indeksKontroll(indeks,false);
-
-        //returnerer tom Node hvis listen er tom
-        if (antall() == 0) {
-            return null;
-        }
-        //jobb her
+        if (antall() == 0){return null;}
 
 
+        Node<T> fjernes = finnNode(indeks);
+        T ut = fjernes.verdi;
+        if (antall()==1){               //fjerner i liste med 1 element
+            hode = hale = null;
 
-        /*indeksKontroll(indeks,false);
-        if (antall() ==0){
-            return null;
-        }
-        if (indeks > antall()-1 || indeks < 0){
-            return null;
-        }
-        //Node<T> n = finnNode(indeks);
+        } else if (indeks == 0) {           //fjerner forrerst
+            hode.neste.forrige = null;
+            hode = hode.neste;
 
-        Node<T> n = new Node<T>(hode.verdi);
-        if (indeks == 0) {
-            n = new Node<T>(hode.neste.verdi, null,hode.neste.neste);
-            hode.neste = n;
-        }
-        else if (indeks == antall()-1){
-            n = new Node<T>(hale.forrige.verdi, hale.forrige,null);
-            hale.forrige = n;
-        }
-        else {
+        } else if (indeks == antall()-1){   //fjerner bakerst
+            hale.forrige.neste = null;
+            hale = hale.forrige;
 
+        } else {        //fjerner midt i
+            Node<T> forann = fjernes.forrige;
+            Node<T> bak = fjernes.neste;
+            forann.neste = bak;
+            bak.forrige = forann;
         }
         endringer++;
         antall--;
-        return n.verdi;
-*/      throw new UnsupportedOperationException();
+        return ut;
     }
 
     @Override
