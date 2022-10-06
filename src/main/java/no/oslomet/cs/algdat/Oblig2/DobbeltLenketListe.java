@@ -212,7 +212,6 @@ public class DobbeltLenketListe<T> implements Liste<T> {
         }
 
         Node<T> n = hode;
-
         //søker igjennom listen etter verdien
         for (int i = 0; i < antall(); i++) {
             if (n.verdi.equals(verdi)){
@@ -287,7 +286,7 @@ public class DobbeltLenketListe<T> implements Liste<T> {
         indeksKontroll(indeks,false);
         if (antall() == 0){return null;}
 
-
+        //finner noden og fjerner den
         Node<T> fjernes = finnNode(indeks);
         T ut = fjernes.verdi;
         if (antall()==1){               //fjerner i liste med 1 element
@@ -301,7 +300,7 @@ public class DobbeltLenketListe<T> implements Liste<T> {
             hale.forrige.neste = null;
             hale = hale.forrige;
 
-        } else {        //fjerner midt i
+        } else {                               //fjerner midt i
             Node<T> forann = fjernes.forrige;
             Node<T> bak = fjernes.neste;
             forann.neste = bak;
@@ -401,68 +400,7 @@ public class DobbeltLenketListe<T> implements Liste<T> {
     }
 
     public static void main(String[] args) {
-        /*
-        String[] s = {"Ole", null, "Per", "Kari", null};
-        Liste<String> liste = new DobbeltLenketListe<>(s);
-        System.out.println(liste.antall() + " " + liste.tom());
-        System.out.println(liste);
-        System.out.println(liste.omvendtString());
-        liste.leggInn("Baltus");
-        liste.leggInn("Bror");
-        System.out.println(liste);
-        System.out.println(liste.omvendtString());
-        */
-
-        Character[] c = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J',};
-        DobbeltLenketListe<Character> liste = new DobbeltLenketListe<>(c);
-      // System.out.println(liste.subliste(3, 8)); // [D, E, F, G, H]
-      // System.out.println(liste.subliste(5, 5)); // []
-      // System.out.println(liste.subliste(8, liste.antall())); // [I, J]
-
-
-        for (int i = 0; i < liste.antall(); i++) {
-            Node<Character> n = liste.finnNode(i);
-        }
-
-        Integer[] nn = {1};
-        DobbeltLenketListe<Integer> enliste = new DobbeltLenketListe<Integer>(nn);
-
-        String ut = enliste.toString();
-        Integer[] tomList = new Integer[0];
-        DobbeltLenketListe<Integer> annenListe = new DobbeltLenketListe<>(tomList);
-
-        annenListe.leggInn(0,1);
-        String ut1 = annenListe.toString();
-
-
-        System.out.println(liste);
-        liste.leggInn(3,'Z');
-        System.out.println(liste);
-        liste.leggInn(0,'H');
-        System.out.println(liste);
-        liste.leggInn(liste.antall(),'O');
-        System.out.println(liste);
-        System.out.println(liste.antall());
-
-        //System.out.println(liste.subliste(0,11)); // skal kaste unntak
-
-
-        /*DobbeltLenketListe<Integer> liste = new DobbeltLenketListe<>();
-        System.out.println(liste.toString() + " " + liste.omvendtString());
-        for (int i = 0; i <= 14; i++) {
-            liste.leggInn(i);
-            System.out.println(liste.toString() + " " + liste.omvendtString());*/
-
-
-       /* String[] s1 = {}, s2 = {"A"}, s3 = {null,"A",null,"B",null};
-        DobbeltLenketListe<String> l1 = new DobbeltLenketListe<>(s1);
-        DobbeltLenketListe<String> l2 = new DobbeltLenketListe<>(s2);
-        DobbeltLenketListe<String> l3 = new DobbeltLenketListe<>(s3);
-        System.out.println(l1.toString() + " " + l2.toString()
-                + " " + l3.toString() + " " + l1.omvendtString() + " "
-                + l2.omvendtString() + " " + l3.omvendtString());*/
-
-
+        System.out.println("helowrld");
     }
 
 } // class DobbeltLenketListe
