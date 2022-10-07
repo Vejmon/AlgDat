@@ -34,7 +34,6 @@ public class DobbeltLenketListe<T> implements Liste<T> {
     private int antall;            // antall noder i listen
     private int endringer;         // antall endringer i listen
 
-
     public DobbeltLenketListe() {
         //lager tom liste
         hode = null;
@@ -329,10 +328,6 @@ public class DobbeltLenketListe<T> implements Liste<T> {
         endringer++;
     }
 
-    private void borteVekk(int indx){
-        fjern(indx);
-    }
-
     @Override
     public String toString() {
 
@@ -375,7 +370,6 @@ public class DobbeltLenketListe<T> implements Liste<T> {
         throw new UnsupportedOperationException();
     }
 
-
     public Iterator<T> iterator(int indeks) {
         throw new UnsupportedOperationException();
     }
@@ -402,6 +396,7 @@ public class DobbeltLenketListe<T> implements Liste<T> {
 
         @Override
         public T next() {
+            //jobb her
             throw new UnsupportedOperationException();
         }
 
@@ -410,11 +405,13 @@ public class DobbeltLenketListe<T> implements Liste<T> {
             throw new UnsupportedOperationException();
         }
 
-
-
     } // class DobbeltLenketListeIterator
 
-    public void testOpg7(){
+    public static <T> void sorter(Liste<T> liste, Comparator<? super T> c) {
+        throw new UnsupportedOperationException();
+    }
+
+    private void testOpg7(){
         long start, stop, imellom;
         Integer[] minListe = new Integer[2000000];
         for (int i = 0; i < 2000000; i++) {
@@ -428,7 +425,7 @@ public class DobbeltLenketListe<T> implements Liste<T> {
 
         start = System.currentTimeMillis();
         while (!enLinka.tom()){
-            enLinka.borteVekk(0);
+            enLinka.fjern(0);
         }
         stop = System.currentTimeMillis();
         imellom = (stop - start);
@@ -444,13 +441,11 @@ public class DobbeltLenketListe<T> implements Liste<T> {
         System.out.println("det tok " + imellom + "ms å kjøre nullstill() for " + annenLinkaAntall + " deler");
     }
 
-    public static <T> void sorter(Liste<T> liste, Comparator<? super T> c) {
-        throw new UnsupportedOperationException();
-    }
-
     public static void main(String[] args) {
-        DobbeltLenketListe<Integer> en = new DobbeltLenketListe<>();
-        en.testOpg7();
+        //test av opg7
+        /*DobbeltLenketListe<Integer> en = new DobbeltLenketListe<>();
+        en.testOpg7();*/
+
     }
 
 } // class DobbeltLenketListe

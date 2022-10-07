@@ -24,3 +24,5 @@ Node<T> n = finnNode(0) med n = hode...
 opg5, her krølla jeg litt med antall()-1 og ikke, her hadde jeg og den katastrofale feilen at hvis man la inn en Node i en tom liste, pekte hale og hode på to individuelle verdier, og ikke samme objekt.
 
 opg6, her løste jeg tilslutt fjern(T) uten å eksplisit finne indeksen til T, har også prøvd å være flink og kommentere ganske så nøye hva som foregår.
+
+for op7 lagde jeg en motode så jeg enklere senere kan kjøre testen min hvis jeg vil, jeg så og at nullstill() metoden er nesten dobbelt så effektiv som fjern0 metoden for alle, men måtte bruke veldig mange noder for å få noe meningsfullt resultat.
