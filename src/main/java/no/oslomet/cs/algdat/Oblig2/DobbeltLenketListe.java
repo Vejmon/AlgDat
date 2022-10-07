@@ -3,6 +3,7 @@ package no.oslomet.cs.algdat.Oblig2;
 
 ////////////////// class DobbeltLenketListe //////////////////////////////
 
+import java.math.BigInteger;
 import java.util.*;
 
 
@@ -313,7 +314,23 @@ public class DobbeltLenketListe<T> implements Liste<T> {
 
     @Override
     public void nullstill() {
-        throw new UnsupportedOperationException();
+        //stopper hvis listen allerede er tom
+        if (tom()){return;}
+        Node<T> n = hode;
+
+        while (!tom()){
+            Node<T> videre = n.neste;
+            n.verdi =null;      //fjerner verdien selvom noden slettes av garbagecollector.
+            n.neste = n.forrige = null;
+            n = videre;
+            antall--;
+        }
+        hode = hale = null;
+        endringer++;
+    }
+
+    private void borteVekk(int indx){
+        fjern(indx);
     }
 
     @Override
@@ -393,14 +410,47 @@ public class DobbeltLenketListe<T> implements Liste<T> {
             throw new UnsupportedOperationException();
         }
 
+
+
     } // class DobbeltLenketListeIterator
+
+    public void testOpg7(){
+        long start, stop, imellom;
+        Integer[] minListe = new Integer[2000000];
+        for (int i = 0; i < 2000000; i++) {
+            minListe[i] = i;
+        }
+
+        DobbeltLenketListe<Integer> enLinka = new DobbeltLenketListe<>(minListe);
+        DobbeltLenketListe<Integer> annenLinka = new DobbeltLenketListe<>(minListe);
+        int enLinkaAntall = enLinka.antall();
+        int annenLinkaAntall = annenLinka.antall();
+
+        start = System.currentTimeMillis();
+        while (!enLinka.tom()){
+            enLinka.borteVekk(0);
+        }
+        stop = System.currentTimeMillis();
+        imellom = (stop - start);
+        System.out.println(enLinka);
+        System.out.println("det tok " + imellom + "ms å kjøre fjern(0) for " + enLinkaAntall + " deler");
+
+        start = System.currentTimeMillis();
+        annenLinka.nullstill();
+
+        stop = System.currentTimeMillis();
+        imellom = (stop - start);
+        System.out.println(annenLinka);
+        System.out.println("det tok " + imellom + "ms å kjøre nullstill() for " + annenLinkaAntall + " deler");
+    }
 
     public static <T> void sorter(Liste<T> liste, Comparator<? super T> c) {
         throw new UnsupportedOperationException();
     }
 
     public static void main(String[] args) {
-        System.out.println("helowrld");
+        DobbeltLenketListe<Integer> en = new DobbeltLenketListe<>();
+        en.testOpg7();
     }
 
 } // class DobbeltLenketListe
