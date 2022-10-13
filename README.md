@@ -25,4 +25,10 @@ opg5, her krølla jeg litt med antall()-1 og ikke, her hadde jeg og den katastro
 
 opg6, her løste jeg tilslutt fjern(T) uten å eksplisit finne indeksen til T, har også prøvd å være flink og kommentere ganske så nøye hva som foregår.
 
-for op7 lagde jeg en motode så jeg enklere senere kan kjøre testen min hvis jeg vil, jeg så og at nullstill() metoden er nesten dobbelt så effektiv som fjern0 metoden for alle, men måtte bruke veldig mange noder for å få noe meningsfullt resultat.
+for op7 lagde jeg en metode så jeg enklere senere kan kjøre testen min hvis jeg vil, jeg så og at nullstill() metoden er nesten dobbelt så effektiv som fjern0 metoden for alle, men måtte bruke veldig mange noder for å få noe meningsfullt resultat.
+
+for opg8 gjør oppgaven bit for bit som beskrevet, og sjekker at koden som følger med fungerer. uten at jeg nødvendigvis skjønner helt hvordan det fungerer...
+
+for opg9 leser Beholder interface for å se hvordan fjernHvis metoden fungerer, prøver til ingen lykke å implementere en lignende løsning for oppgave 10. ellers så gjør jeg oppgaven steg for steg og sjekker med gitt kode i oppgaven.
+
+opg10, implementerte bubbleSort for å raskt løse oppgaven, den er ekstra innefektiv da hver gang jeg henter to nye verdier eller oppdaterer listen må jeg loope igjennom listen fra start til ønsket verdi... Har lyst til senere å implementere en mer effektiv sorteringsløsning. også kanskje bruke iteratoren?

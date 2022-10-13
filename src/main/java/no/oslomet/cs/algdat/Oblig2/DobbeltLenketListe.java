@@ -3,7 +3,6 @@ package no.oslomet.cs.algdat.Oblig2;
 
 ////////////////// class DobbeltLenketListe //////////////////////////////
 
-import java.math.BigInteger;
 import java.util.*;
 
 
@@ -44,16 +43,17 @@ public class DobbeltLenketListe<T> implements Liste<T> {
     public DobbeltLenketListe(T[] a) {
         Objects.requireNonNull(a, "Tabellen a er null!");
 
-        for (int i = 0; i < a.length; i++) {
-            if (!Objects.isNull(a[i])) {
+
+        for (T t : a) {
+            if (!Objects.isNull(t)) {
                 //plasserer det første elementet hvis listen er tom
                 if (tom()) {
-                    Node<T> n = new Node<>(a[i], hode, hale);
+                    Node<T> n = new Node<>(t, hode, hale);
                     hode = hale = n;
                     antall++;
                 } else {
                     //plasserer de resterende Nodene baksert
-                    Node<T> n = new Node<>(a[i]);
+                    Node<T> n = new Node<>(t);
                     hale.neste = n;
                     n.forrige = hale;
                     hale = n;
@@ -367,11 +367,13 @@ public class DobbeltLenketListe<T> implements Liste<T> {
 
     @Override
     public Iterator<T> iterator() {
-        throw new UnsupportedOperationException();
+        return new DobbeltLenketListeIterator();
     }
 
     public Iterator<T> iterator(int indeks) {
-        throw new UnsupportedOperationException();
+        //sjekker indeks
+        indeksKontroll(indeks,false);
+        return new DobbeltLenketListeIterator(indeks);
     }
 
     private class DobbeltLenketListeIterator implements Iterator<T> {
@@ -386,7 +388,15 @@ public class DobbeltLenketListe<T> implements Liste<T> {
         }
 
         private DobbeltLenketListeIterator(int indeks) {
-            throw new UnsupportedOperationException();
+            //looper frem til gitt indeks,
+            //kontroll av indeks er allerede utført
+            for (int i = 0; i < indeks-1; i++) {
+                if (hasNext()) {  //måten denne blir utført kan denne.neste ikke være null
+                    denne = denne.neste;
+                }
+            }
+            fjernOK = false;
+            iteratorendringer = endringer;
         }
 
         @Override
@@ -396,21 +406,75 @@ public class DobbeltLenketListe<T> implements Liste<T> {
 
         @Override
         public T next() {
-            //jobb her
-            throw new UnsupportedOperationException();
+            //gjør denne akkuratt som gitt i oppgaveteksten
+            if (iteratorendringer != endringer) throw new ConcurrentModificationException();
+            if (!hasNext()) throw new NoSuchElementException();
+            fjernOK = true;
+            T denneVerdi = denne.verdi;
+            denne = denne.neste;
+            return denneVerdi;
         }
+
 
         @Override
         public void remove() {
-            throw new UnsupportedOperationException();
+            if (!fjernOK) throw new IllegalStateException();
+            if (endringer != iteratorendringer) throw new ConcurrentModificationException();
+            fjernOK = false;
+
+            if (antall()==1) {  //hvis listen bare har et element, settes hale og hode til null
+                hode = hale = null;
+            }
+            else if (denne == null) {
+                hale = hale.forrige;  //hvis pekeren er forbi halen, fjernes halen.
+                hale.neste = null;
+            }
+            else if (denne.forrige.equals(hode)) {
+                hode = hode.neste; //hvis pekeren er forbi hodet fjernes hodet.
+                hode.forrige = null;
+            }
+            else {
+                Node<T> bakFjernes = denne.forrige.forrige;
+                bakFjernes.neste = denne;    //hvis pekeren er midt i fjernes den bak pekeren.
+                denne.forrige = bakFjernes;
+            }
+            //setter endringer og antall
+            iteratorendringer++;
+            endringer++;
+            antall--;
         }
 
     } // class DobbeltLenketListeIterator
 
     public static <T> void sorter(Liste<T> liste, Comparator<? super T> c) {
-        throw new UnsupportedOperationException();
+        //bubbleSort
+        //returnerer hvis listen er for kort
+        if (liste.antall() <= 1){
+            return;
+        }
+
+        //henter verdier og hvilke indeks de er på.
+        int bakerstInx = liste.antall()-1;
+        boolean uSortert = true;
+
+        while (uSortert) {
+            uSortert = false;
+
+            for (int i = 0; i <bakerstInx; i++) {
+                T foran = liste.hent(i);
+                T bak = liste.hent(i+1);
+                int sammenlign = c.compare(foran, bak);
+                if (sammenlign > 0){
+                    liste.oppdater(i, bak);
+                    liste.oppdater(i+1, foran);
+                    uSortert = true;
+                }
+            }
+            bakerstInx--;
+        }
     }
 
+    //lar stå, siden jeg vil beholde muligheten for lett å teste
     private void testOpg7(){
         long start, stop, imellom;
         Integer[] minListe = new Integer[2000000];
@@ -442,10 +506,25 @@ public class DobbeltLenketListe<T> implements Liste<T> {
     }
 
     public static void main(String[] args) {
+        Integer[] tall = {3,6,8,41,51,1,31,9,0};
+        Liste<Integer> liste2 = new DobbeltLenketListe<>(tall);
+        DobbeltLenketListe.sorter(liste2, Comparator.naturalOrder());
+        System.out.println(liste2);
+        System.out.println(Arrays.toString(tall));
+        System.out.println();
+
+
+        String[] navn = {"Lars","Anders","Bodil","Kari","Per","Berit"};
+        Liste<String> liste1 = new DobbeltLenketListe<>(navn);
+        DobbeltLenketListe.sorter(liste1, Comparator.naturalOrder());
+        System.out.println(liste1); // [Anders, Berit, Bodil, Kari, Lars, Per]
+
+        System.out.println(Arrays.toString(navn));
+        // [Lars, Anders, Bodil, Kari, Per, Berit]
+
         //test av opg7
-        /*DobbeltLenketListe<Integer> en = new DobbeltLenketListe<>();
-        en.testOpg7();*/
+        //DobbeltLenketListe<Integer> en = new DobbeltLenketListe<>();
+        //en.testOpg7();
 
     }
-
 } // class DobbeltLenketListe
